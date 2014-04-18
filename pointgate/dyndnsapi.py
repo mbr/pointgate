@@ -112,9 +112,9 @@ def update_record():
                       fqdn, zone['id'], ip,
                       r.status_code))
     except requests.HTTPError as e:
-        print(e)  # just print to logs, do not disclose information to the
-                  # outside
+        print(e.response.text)  # just print to logs, do not disclose
+                                # information to the outside
         abort(500, 'Error while communicating with PointDNS. Status: {}'
-              .format(e.status_code))
+              .format(e.response.status_code))
 
     return 'hostnames: {}\nip: {}'.format(hostnames, ip)
