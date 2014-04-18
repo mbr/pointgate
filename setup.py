@@ -12,7 +12,7 @@ def read(fname):
 
 setup(
     name='pointgate',
-    version='0.1dev',
+    version='0.2',
     description='DynDNS-like API for PointDNS (to support older routers).',
     long_description=read('README.rst'),
     author='Marc Brinkmann',
