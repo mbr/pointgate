@@ -24,3 +24,7 @@ Simple::
   heroku config:set POINTGATE_POINTDNS_USER=<your pointhq account's email>
   heroku config:set POINTGATE_POINTDNS_API_KEY=<your pointdns api key>
   git push heroku master
+  heroku ps:scale web=1
+
+Afterwards you can check whether your installation is running by visiting
+https://<heroku app name>/nic/update?ip=<desired ip>&hostname=<desired domain>
