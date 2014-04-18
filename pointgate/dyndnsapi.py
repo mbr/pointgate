@@ -1,7 +1,7 @@
 from functools import wraps
 import json
 
-from flask import Blueprint, request, Response, current_app
+from flask import Blueprint, request, Response, current_app, abort
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -45,6 +45,10 @@ def update_record():
         'Accept': 'application/json',
         'Content-type': 'application/json',
     }
+
+    for field in ('hostname', 'myip'):
+        if not field in requests.args:
+            abort(400, 'Missing mandatory field: {}'.format(field))
 
     # parse url arguments
     hostnames = request.args['hostname'].split(',')
