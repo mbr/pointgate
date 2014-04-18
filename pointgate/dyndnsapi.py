@@ -47,7 +47,7 @@ def update_record():
     }
 
     for field in ('hostname', 'myip'):
-        if not field in requests.args:
+        if not field in request.args:
             abort(400, 'Missing mandatory field: {}'.format(field))
 
     # parse url arguments
