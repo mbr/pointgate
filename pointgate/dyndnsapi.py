@@ -59,56 +59,62 @@ def update_record():
     r = requests.get('{}/zones'.format(api),
                      headers=headers,
                      auth=auth)
-    r.raise_for_status()
+    try:
+        r.raise_for_status()
 
-    for z in r.json():
-        zone = z['zone']
-        if zone['name'] in hostnames:
-            fqdn = '{}.'.format(zone['name'])
-            rec = {
-                'zone_record': {
-                    'record_type': 'A',
-                    'name': fqdn,
-                    'data': ip,
-                    'ttl': current_app.config['POINTDNS_RECORD_TTL'],
+        for z in r.json():
+            zone = z['zone']
+            if zone['name'] in hostnames:
+                fqdn = '{}.'.format(zone['name'])
+                rec = {
+                    'zone_record': {
+                        'record_type': 'A',
+                        'name': fqdn,
+                        'data': ip,
+                        'ttl': current_app.config['POINTDNS_RECORD_TTL'],
+                    }
                 }
-            }
 
-            records_url = '{}/zones/{}/records'.format(api, zone['id'])
+                records_url = '{}/zones/{}/records'.format(api, zone['id'])
 
-            # found our zone, get all records
-            record_id = None
-            r = requests.get(records_url,
-                             headers=headers,
-                             auth=auth)
-            r.raise_for_status()
-
-            for rec in r.json():
-                record = rec['zone_record']
-
-                if record['record_type'] == 'A' and record['name'] == fqdn:
-                    record_id = record['id']
-                    break
-
-            if record_id is None:
-                # create new if not present
-                r = requests.post(records_url,
-                                  data=json.dumps(rec),
-                                  headers=headers,
-                                  auth=auth)
-            else:
-                # update old record
-                r = requests.put('{}/{}'.format(records_url, record_id),
-                                 data=json.dumps(
-                                     {'zone_record': {'data': ip}}
-                                 ),
+                # found our zone, get all records
+                record_id = None
+                r = requests.get(records_url,
                                  headers=headers,
                                  auth=auth)
-            print r.text
-            r.raise_for_status()
-            print('{} {}({}) -> {}. Reponse: {}'.format(
-                  'Created' if record_id is None else 'Updated',
-                  fqdn, zone['id'], ip,
-                  r.status_code))
+                r.raise_for_status()
+
+                for rec in r.json():
+                    record = rec['zone_record']
+
+                    if record['record_type'] == 'A' and record['name'] == fqdn:
+                        record_id = record['id']
+                        break
+
+                if record_id is None:
+                    # create new if not present
+                    r = requests.post(records_url,
+                                      data=json.dumps(rec),
+                                      headers=headers,
+                                      auth=auth)
+                else:
+                    # update old record
+                    r = requests.put('{}/{}'.format(records_url, record_id),
+                                     data=json.dumps(
+                                         {'zone_record': {'data': ip}}
+                                     ),
+                                     headers=headers,
+                                     auth=auth)
+                print r.text
+                r.raise_for_status()
+                print('{} {}({}) -> {}. Reponse: {}'.format(
+                      'Created' if record_id is None else 'Updated',
+                      fqdn, zone['id'], ip,
+                      r.status_code))
+    except requests.HTTPError as e:
+        print(e)  # just print to logs, do not disclose information to the
+                  # outside
+        abort(500, 'Error while communicating with PointDNS. Status: {}'
+              .format(e.status_code))
 
     return 'hostnames: {}\nip: {}'.format(hostnames, ip)
