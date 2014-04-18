@@ -46,6 +46,8 @@ def update_record():
         'Content-type': 'application/json',
     }
 
+    msg = 'Nothing accomplished.'
+
     for field in ('hostname', 'myip'):
         if not field in request.args:
             abort(400, 'Missing mandatory field: {}'.format(field))
@@ -107,10 +109,10 @@ def update_record():
                                      auth=auth)
                 print r.text
                 r.raise_for_status()
-                print('{} {}({}) -> {}. Reponse: {}'.format(
-                      'Created' if record_id is None else 'Updated',
-                      fqdn, zone['id'], ip,
-                      r.status_code))
+                msg = '{} {}({}) -> {}. Reponse: {}'.format(
+                          'Created' if record_id is None else 'Updated',
+                          fqdn, zone['id'], ip,
+                          r.status_code)
     except requests.HTTPError as e:
         # just print to logs, do not disclose information to the outside
         print('Reply from PointHQ: {}'.format(e.response.text))
@@ -118,4 +120,4 @@ def update_record():
         abort(500, 'Error while communicating with PointDNS. Status: {}'
               .format(e.response.status_code))
 
-    return 'hostnames: {}\nip: {}'.format(hostnames, ip)
+    return msg
