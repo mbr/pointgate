@@ -18,7 +18,7 @@ Installation
 Simple::
 
   git clone https://github.com/mbr/pointgate
-  heroku create
+  heroku create --region eu <heroku app name>
   heroku config:set POINTGATE_UPDATE_USER=<a username to login for the router>
   heroku config:set POINTGATE_UPDATE_PASSWORD=<a password to login>
   heroku config:set POINTGATE_POINTDNS_USER=<your pointhq account's email>
