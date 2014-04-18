@@ -23,3 +23,4 @@ Simple::
   heroku config:set POINTGATE_UPDATE_PASSWORD=<a password to login>
   heroku config:set POINTGATE_POINTDNS_USER=<your pointhq account's email>
   heroku config:set POINTGATE_POINTDNS_API_KEY=<your pointdns api key>
+  git push heroku master

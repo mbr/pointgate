@@ -20,7 +20,7 @@ setup(
     url='http://github.com/mbr/pointgate',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=['flask', 'flask-appconfig', 'requests'],
+    install_requires=['flask', 'flask-appconfig', 'requests', 'gunicorn'],
     entry_points={
     }
 )
