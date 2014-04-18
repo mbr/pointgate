@@ -26,5 +26,6 @@ Simple::
   git push heroku master
   heroku ps:scale web=1
 
-Afterwards you can check whether your installation is running by visiting
-https://<heroku app name>/nic/update?ip=<desired ip>&hostname=<desired domain>
+Afterwards you can check whether your installation is running by visiting::
+
+  https://<heroku app name>/nic/update?ip=<desired ip>&hostname=<desired domain>
